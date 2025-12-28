@@ -28,7 +28,7 @@ python -m pip install --upgrade pip
 
 ### 3. 라이브러리, 텍스트 탐지 모델 설치
 
-````bash
+```bash
 pip install -r requirements.txt
 
 pip install gdown
@@ -93,4 +93,5 @@ webtoon-multimodal-search/
 
 ---
 ````
+
 
