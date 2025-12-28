@@ -1,0 +1,26 @@
+# pip install -r requirements.txt
+
+# 기본 유틸
+numpy
+opencv-python
+Pillow
+requests
+python-dotenv
+tqdm
+
+# deep learning
+torch
+torchvision
+
+# OCR
+paddlepaddle
+paddleocr
+
+# ONNX (comic-text-detector inference용)
+onnx
+onnxruntime
+
+wandb
+torchsummary
+
+# pip install numpy==1.23.5
