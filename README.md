@@ -91,7 +91,5 @@ webtoon-multimodal-search/
 └─ README.md
 ```
 
----
-````
 
 
