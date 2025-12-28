@@ -68,7 +68,7 @@ python main.py
 
 ## 2) 프로젝트 구조
 
-````txt
+```txt
 webtoon-multimodal-search/
 ├─ src/
 │  ├─ main.py              # 파이프라인 실행(탐지 → crop → CLOVA OCR)
