@@ -1,0 +1,22 @@
+# === Core ===
+numpy
+tqdm
+python-dotenv
+
+# === Vector DB ===
+qdrant-client
+
+# === AI & Deep Learning ===
+torch
+torchvision
+transformers
+accelerate
+sentence-transformers
+
+# === Image Processing (OCR & Caption) ===
+pillow
+easyocr
+opencv-python-headless
+
+# === LLM (Generation) ===
+openai
