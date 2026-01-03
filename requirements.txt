@@ -1,22 +1,11 @@
-# === Core ===
-numpy
-tqdm
-python-dotenv
-
-# === Vector DB ===
 qdrant-client
-
-# === AI & Deep Learning ===
+sentence-transformers
+transformers
 torch
 torchvision
-transformers
-accelerate
-sentence-transformers
-
-# === Image Processing (OCR & Caption) ===
-pillow
 easyocr
-opencv-python-headless
-
-# === LLM (Generation) ===
+pillow
 openai
+python-dotenv
+numpy
+tqdm
