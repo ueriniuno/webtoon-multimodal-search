@@ -1,0 +1,14 @@
+# 가상환경
+webtoon/
+venv/
+.venv/
+
+# 로컬 DB 저장소 (용량 및 보안 문제)
+qdrant_storage/
+
+# 파이썬 캐시
+__pycache__/
+*.py[cod]
+
+# 환경 변수 파일
+.env
