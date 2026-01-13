@@ -19,3 +19,6 @@ comic_text_detector/data/*.pt
 
 src/images/total_processed/
 ocr_results_*.json
+
+src/json_data_ocr_/
+src/json_data_ocr/
