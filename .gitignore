@@ -16,3 +16,6 @@ tmp_*.jpg
 # Model weights
 comic_text_detector/data/*.onnx
 comic_text_detector/data/*.pt
+
+src/images/total_processed/
+ocr_results_*.json

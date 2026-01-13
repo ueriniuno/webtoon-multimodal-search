@@ -55,7 +55,7 @@ if not all_image_files:
     raise RuntimeError(f"{IMAGE_DIR}에 PNG 이미지가 없습니다")
 
 # ⚙️ 처리할 이미지 개수 설정
-TEST_LIMIT = 10  # 원하는 개수로 변경 (None이면 전체)
+TEST_LIMIT = None # 원하는 개수로 변경 (None이면 전체)
 
 if TEST_LIMIT:
     image_files = all_image_files[:TEST_LIMIT]
