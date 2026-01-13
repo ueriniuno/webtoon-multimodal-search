@@ -1,0 +1,21 @@
+{
+  "image_file": "screencapture-comic-naver-webtoon-detail-2025-11-29-14_34_42-6_split_v13_10.png",
+  "ocr": [
+    {
+      "block_number": 0,
+      "text": "코드에 달린"
+    },
+    {
+      "block_number": 1,
+      "text": "*주석도 그래요"
+    },
+    {
+      "block_number": 2,
+      "text": "처음 본 사람도 바로 이해할 수 있었어요"
+    },
+    {
+      "block_number": 3,
+      "text": "*주석 : 코드의 목적과 기능을 설명하는 메모로, 다른 개발자의 이해를 돕는다."
+    }
+  ]
+}

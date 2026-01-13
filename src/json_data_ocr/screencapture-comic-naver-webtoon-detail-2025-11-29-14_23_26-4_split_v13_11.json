@@ -1,0 +1,17 @@
+{
+  "image_file": "screencapture-comic-naver-webtoon-detail-2025-11-29-14_23_26-4_split_v13_11.png",
+  "ocr": [
+    {
+      "block_number": 0,
+      "text": "···조이 님은 퇴근 안 하세요? 오늘 8시에 출근했잖아요."
+    },
+    {
+      "block_number": 1,
+      "text": "원래 칼퇴하려 했는데, 코드 좀 익힐 겸 분석하다 보니 벌써 이렇게 됐네요."
+    },
+    {
+      "block_number": 2,
+      "text": "곧 가려고요 흐흐"
+    }
+  ]
+}

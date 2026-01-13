@@ -1,0 +1,25 @@
+{
+  "image_file": "screencapture-comic-naver-webtoon-detail-2025-11-29-14_34_42-4_split_v13_07.png",
+  "ocr": [
+    {
+      "block_number": 0,
+      "text": "제가 오늘 점심은 정산팀이랑 선약이 있고. ·"
+    },
+    {
+      "block_number": 1,
+      "text": "내일은"
+    },
+    {
+      "block_number": 2,
+      "text": "내일은... 에스더랑 점심 약속. ·"
+    },
+    {
+      "block_number": 3,
+      "text": "모레는 주말이"
+    },
+    {
+      "block_number": 4,
+      "text": "다음주 월요일은 연차. ···"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "image_file": "screencapture-comic-naver-webtoon-detail-2025-11-29-14_23_26_split_v13_07.png",
+  "ocr": [
+    {
+      "block_number": 0,
+      "text": "*리팩터링: 기능변화없이 코드를 수정해 가독성, 구조를 개선하는 과정"
+    },
+    {
+      "block_number": 1,
+      "text": "이 적당한 안정감이야말로 내가 가장 좋아하는."
+    }
+  ]
+}
