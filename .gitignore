@@ -22,3 +22,6 @@ ocr_results_*.json
 
 src/json_data_ocr_/
 src/json_data_ocr/
+src/json_data_translated/
+src/json_data_merged/
+src/im/
