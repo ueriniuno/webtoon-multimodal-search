@@ -81,16 +81,21 @@ def run_webtoon_pipeline(input_dir, output_root):
         ep_id = extract_episode_id(os.path.basename(f))
         if ep_id: episode_groups[ep_id].append(f)
 
-    print(f"총 {len(episode_groups)}개의 화(Episode)를 감지했습니다.")
+    # ★ 수정 포인트: 에피소드 ID(시간순)를 정렬하여 순번(1, 2, 3...) 부여
+    sorted_ep_ids = sorted(episode_groups.keys())
+    print(f"총 {len(sorted_ep_ids)}개의 화(Episode)를 감지했습니다.")
 
-    for ep_id, batch in episode_groups.items():
-        # ★중요: 각 그룹 내에서 파일을 숫자 순서대로 정렬 (첫 장이 무조건 맨 위로!)
+    for idx, ep_id in enumerate(sorted_ep_ids, 1):
+        batch = episode_groups[ep_id]
+        # 각 그룹 내에서 파일을 숫자 순서대로 정렬
         batch.sort(key=natural_sort_key)
 
-        print(f"\n[작업 시작] ID: {ep_id} (파일 {len(batch)}개) 순서대로 합치는 중...")
+        print(f"\n[작업 시작] {idx}화 (ID: {ep_id}, 파일 {len(batch)}개) 처리 중...")
 
-        episode_out_dir = os.path.join(output_root, f"episode_{ep_id}")
-        if not os.path.exists(episode_out_dir): os.makedirs(episode_out_dir)
+        # 폴더명을 'episode_날짜' 대신 '1', '2', '3'으로 설정
+        episode_out_dir = os.path.join(output_root, str(idx))
+        if not os.path.exists(episode_out_dir):
+            os.makedirs(episode_out_dir)
 
         # 이미지 로드 및 가로 너비 통일
         imgs = [cv2.imread(f) for f in batch]
@@ -99,9 +104,13 @@ def run_webtoon_pipeline(input_dir, output_root):
 
         target_w = imgs[0].shape[1]
         resized = [cv2.resize(img, (target_w, int(img.shape[0] * (target_w / img.shape[1])))) for img in imgs]
+
+        # 세로로 합치기
         merged_img = cv2.vconcat(resized)
-        total_cuts = process_and_split_by_ratio(merged_img, f"ep_{ep_id}", episode_out_dir)
-        print(f" -> 성공: {total_cuts}개의 최종 컷을 저장했습니다.")
+
+        # 결과 저장 (파일명도 숫자에 맞춰 변경 가능)
+        total_cuts = process_and_split_by_ratio(merged_img, f"ep_{idx}", episode_out_dir)
+        print(f" -> {idx}화 성공: {total_cuts}개의 최종 컷을 저장했습니다.")
 
 
 if __name__ == "__main__":
