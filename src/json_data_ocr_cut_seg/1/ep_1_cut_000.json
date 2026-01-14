@@ -1,0 +1,54 @@
+{
+  "episode": "1",
+  "image_file": "ep_1_cut_000.png",
+  "ocr": [
+    {
+      "block_number": 0,
+      "text": "NAVER 웹툰 웹소설 |"
+    },
+    {
+      "block_number": 1,
+      "text": "웹툰"
+    },
+    {
+      "block_number": 2,
+      "text": "베스트도전"
+    },
+    {
+      "block_number": 3,
+      "text": "도전만화 마이페이지"
+    },
+    {
+      "block_number": 4,
+      "text": "어쩌다보니천생연분 | 01화 누구세요?"
+    },
+    {
+      "block_number": 5,
+      "text": "요일전체 월 화 수 목 금 토 일 매일+ 신작 완결"
+    },
+    {
+      "block_number": 6,
+      "text": "제목/작가로 검색할 수 있습니다."
+    },
+    {
+      "block_number": 7,
+      "text": "9 고혜정"
+    },
+    {
+      "block_number": 8,
+      "text": "숏폼 서비스 컷츠 출시! 웹툰 올리기 뿐만 이니라 컷츠 업로드와 관리도 가능합니다. 달라진 창작 환경을 경험해 보세요."
+    },
+    {
+      "block_number": 9,
+      "text": "숏폼 서비스 컷츠 출시! 웹툰 올리기 뿐만 이니라 컷츠 업로로드 관리도 기능합니다. 달라진 창작 환경을 경험해 보세요."
+    },
+    {
+      "block_number": 10,
+      "text": "N CREATOR'S"
+    },
+    {
+      "block_number": 11,
+      "text": "+ 관심 이전화 | : 목록 | 다음화"
+    }
+  ]
+}

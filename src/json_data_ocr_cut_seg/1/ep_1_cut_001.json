@@ -1,0 +1,10 @@
+{
+  "episode": "1",
+  "image_file": "ep_1_cut_001.png",
+  "ocr": [
+    {
+      "block_number": 0,
+      "text": "15 세 이상 감상을 권장합니다"
+    }
+  ]
+}

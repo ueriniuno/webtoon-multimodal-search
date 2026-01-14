@@ -1,0 +1,14 @@
+{
+  "episode": "1",
+  "image_file": "ep_1_cut_010.png",
+  "ocr": [
+    {
+      "block_number": 0,
+      "text": "옳지~ 에구구구·"
+    },
+    {
+      "block_number": 1,
+      "text": "한지아 /32세 일하지 않는 프리랜서"
+    }
+  ]
+}

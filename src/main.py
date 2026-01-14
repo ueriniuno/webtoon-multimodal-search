@@ -129,10 +129,6 @@ for img_path in tqdm(image_files, desc="🔍 OCR 처리 중"):
             "text": " ".join(merged_texts)
         })
 
-    if not ocr_blocks:
-        no_blocks_count += 1
-        continue
-
     # =========================
     # ⭐ 이미지 1장 = JSON 1개 저장
     # =========================

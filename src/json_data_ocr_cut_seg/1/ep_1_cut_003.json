@@ -1,0 +1,14 @@
+{
+  "episode": "1",
+  "image_file": "ep_1_cut_003.png",
+  "ocr": [
+    {
+      "block_number": 0,
+      "text": "주"
+    },
+    {
+      "block_number": 1,
+      "text": "째 색 째"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "episode": "1",
+  "image_file": "ep_1_cut_007.png",
+  "ocr": [
+    {
+      "block_number": 0,
+      "text": "아부부 ~"
+    },
+    {
+      "block_number": 1,
+      "text": "어휴~ 귀여워라."
+    },
+    {
+      "block_number": 2,
+      "text": "아부 ~"
+    }
+  ]
+}
