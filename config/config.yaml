@@ -1,0 +1,25 @@
+# config/config.yaml
+
+paths:
+  # 데이터가 저장된 루트 경로
+  data_dir: "./data"
+  # 생성될 Lookup Store(화/사건 요약 사전) 경로
+  lookup_store: "./data/lookup_store.json"
+  # Qdrant 벡터 DB 저장 경로
+  qdrant_storage: "./qdrant_storage"
+
+models:
+  # 임베딩 모델 (한국어 특화)
+  embedding: "jhgan/ko-sbert-nli"
+  # 리랭커 모델 (Cross-Encoder)
+  reranker: "BAAI/bge-reranker-v2-m3"
+  # LLM 모델 (EXAONE)
+  llm: "LGAI-EXAONE/EXAONE-3.5-7.8B-Instruct"
+
+rag:
+  # Qdrant 컬렉션 이름
+  collection_name: "webtoon_scene_groups"
+  # 1차 검색(Hybrid)에서 가져올 후보 개수
+  top_k_retrieve: 50
+  # 리랭킹 후 최종 LLM에 넘길 개수
+  top_k_final: 5

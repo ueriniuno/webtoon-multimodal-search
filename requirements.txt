@@ -59,3 +59,6 @@ triton==3.2.0
 typing-inspection==0.4.2
 typing_extensions==4.15.0
 urllib3==2.6.2
+# 👇 [필수 추가됨] Hybrid Search & 형태소 분석용
+rank-bm25
+kiwipiepy
