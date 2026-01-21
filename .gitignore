@@ -13,4 +13,3 @@ __pycache__/
 # 환경 변수 파일
 .env
 data/
-debug_search_log.txt

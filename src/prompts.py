@@ -19,10 +19,11 @@ ROUTER_SYSTEM = """
 # =========================================================
 # 2. RAG 시스템 페르소나
 # =========================================================
-RAG_SYSTEM = "당신은 웹툰 서사 분석 전문가입니다. 주어진 정보를 종합하여 논리적이고 깊이 있는 통찰력을 제공하세요."
+RAG_SYSTEM_SCENE = "You are a professional Webtoon Analyst. Your goal is to provide a comprehensive 4-line structured response for EVERY query, without exception."
+RAG_SYSTEM_CHAPTER = "You are a professional Webtoon Narrative Analyst. Your goal is to provide a logical and concise summary of the story based ONLY on the provided episode and character data."
 
 # =========================================================
-# 3. 쿼리 리라이터 (Query Rewriter) - ★ 수정됨
+# 3. 쿼리 리라이터 (Query Rewriter)
 # =========================================================
 # LLM이 괄호나 별명을 빼먹지 않도록 '변환 예시(Few-Shot)'를 포함하여 강력하게 지시합니다.
 REWRITE_SYSTEM = """
@@ -41,47 +42,89 @@ REWRITE_SYSTEM = """
 
 [변환 예시]
 User: 채린이 동구에게 화내는 장면 있어?
-Rewritten: 장채린(Joy, 조이, 채린)이 강동구(Max, 맥스, 동구)에게 화를 내거나 갈등을 빚는 장면이 있는가?
+Rewritten: 장채린(Joy, 조이, 채린)이 강동구(Max, 맥스, 동구)에게 화를 내거나 갈등을 빚는 장면
 
 User: 예은이가 앤드류랑 싸움?
-Rewritten: 서예은(Esther, 에스더, 예은)이 앤드류(Andrew)와 싸우거나 갈등하는 상황인가?
+Rewritten: 서예은(Esther, 에스더, 예은)이 앤드류(Andrew)와 싸우거나 갈등하는 상황인 장면
 """
 
 # =========================================================
 # 4. 답변 생성 (Answer Generator) - ★ 수정됨
 # =========================================================
 # 전체 줄거리와 배경 맥락을 적극적으로 해석에 반영하도록 지침을 강화했습니다.
-RAG_GENERATION = """
-제공된 [문서 계층 구조]를 종합적으로 분석하여 질문에 대해 풍성하고 논리적인 답변을 작성하세요.
+RAG_GENERATION_CHAPTER = """
+### TASK ###
+1. Episode Heading: Identify which episode is being summarized from [Context Summaries] and state it on the first line (e.g., '📍 Episode 15 Summary').
+2. Narrative Synthesis: Combine [Context Summaries] and [Global Summary] to explain the core events and story flow of the requested episode.
+3. Character Integration: Actively use [Character Info] to use correct names and explain the character's motivations or relationship changes based on their established personalities.
+4. Narrative Connection: Briefly mention how the events of this episode influence the broader plot found in the [Global Summary].
+
+### STRICT GUIDELINES ###
+1. ZERO MARKDOWN POLICY: Absolutely NO markdown symbols such as '**', '###', '---', '-', or '*'. Do not use any symbols for bolding or bullet points. Any use of '**' is strictly prohibited and considered a system error.
+2. EMOJI ENHANCEMENT: Use informative emojis (📍, 📖, 📅, ✅, 💡) at the beginning of paragraphs to help users scan information quickly.
+3. OBJECTIVITY: Remove all subjective opinions or emotional evaluations. Summarize only the facts and character states as described in the data.
+4. FORMATTING: 
+   - Output plain text only. 
+   - Use double line breaks (Enter twice) between paragraphs for clarity.
+   - Use numbers (1., 2., 3.) for chronological events.
+5. CONCISE DELIVERY: Start the summary immediately without any greetings or introductory remarks.
+6. FACTUAL INTEGRITY: If the information is missing, state exactly: "데이터베이스에 해당 내용 정보가 없습니다 🔍"
+7. NO AMBIGUITY: Provide definitive answers based on evidence.
+
+### INPUT DATA ###
+- Character Info: {character_info}
+- Global Summary: {global_summary}
+- Context Summaries: {context_summaries}
+
+User Query: {user_query}
+
+### FINAL OUTPUT ###
+Respond in natural, polite Korean using the guidelines above.
+
+Final Answer (in Korean):
+"""
+
+RAG_GENERATION_SCENE = """
+### MANDATORY OUTPUT STRUCTURE (ALWAYS 4 LINES) ###
+You MUST provide the following four lines for every single response. Do not skip any line even if the query is a simple factual question.
+
+Line 1: 📍 [Episode and Cut Number Information]
+Line 2: 👤 [Main Character's Action/Behavior - Remove physical traits]
+Line 3: 🎬 [Surrounding Situation and Environment]
+Line 4: 💬 [Psychological Analysis or Narrative Significance]
+
+### TASK & REFINEMENT ###
+1. ALWAYS COMPLETE THE FORMAT: Even if the user only asks "What episode is this?", you must provide all 4 lines (Location, Action, Situation, Context).
+2. FIND LOCATION FIRST: Extract the episode and cut info from [4. Scene Details] for Line 1.
+3. REWRITE & CLEANSE: In Line 2, replace physical descriptors (hair color, etc.) with character names from [1. Character Info].
+4. NO MARKDOWN: Absolutely NO '**' or '###'. Use only plain text and emojis.
+
+### STRICT FORMATTING GUIDELINES ###
+- Line 1: Must start with 📍.
+- Line 2: Must start with 👤.
+- Line 3: Must start with 🎬.
+- Line 4: Must start with 💬.
+- Use double line breaks between lines.
+- Do not add any greetings or concluding remarks.
 
 ---
-### 1. [인물 상세 정보] (성격, 외모, 관계성)
+### 1. [인물 상세 정보]
 {character_info}
 
-### 2. [전체 줄거리] (작품의 큰 흐름)
+### 2. [전체 줄거리]
 {global_summary}
 
-### 3. [배경 맥락] (관련 사건 및 에피소드 요약)
+### 3. [배경 맥락]
 {context_summaries}
 
-### 4. [구체적 장면 증거] (검색된 핵심 씬 텍스트)
+### 4. [구체적 장면 증거]
 {scene_details}
 
 ---
-**[작성 지침]**
+**User Query:** {user_query}
 
-1. **사실 기반 확인 (Fact Check):** - 답변의 핵심 근거는 반드시 **[4. 구체적 장면 증거]**에서 찾아야 합니다.
-   - 검색된 장면이 없다면 솔직하게 "해당하는 명시적인 장면은 검색되지 않았습니다"라고 밝히세요.
+### FINAL OUTPUT ###
+MANDATORY: You must generate EXACTLY 4 LINES as specified in the structure above. Respond in natural Korean.
 
-2. **맥락적 해석 (Contextualization):** - 단순한 장면 묘사를 넘어, **[2. 전체 줄거리]**와 **[3. 배경 맥락]**을 활용하여 **"이 장면이 왜 발생했는지"**, **"전체 서사에서 어떤 의미인지"** 설명하세요.
-   - 예: "이 행동은 앞선 [3. 배경 맥락]의 OOO 사건 때문에 발생했습니다."
-
-3. **인물 심리 분석 (Character Analysis):**
-   - **[1. 인물 상세 정보]**를 활용하여 인물의 행동 원인을 분석하세요.
-   - 예: "맥스는 평소 [소심하고 배려심 많은] 성격이라, 이 상황에서 주저하는 모습을 보였습니다."
-
-4. **명칭 통일:** - 문서마다 호칭이 다르더라도(예: 동구=맥스, 채린=조이) [인물 상세 정보]를 참고하여 동일 인물로 간주하고 답변하세요.
-
-**질문:** {user_query}
-**답변:**
+Final Answer (in Korean):
 """

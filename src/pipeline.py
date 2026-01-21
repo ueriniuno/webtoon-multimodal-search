@@ -9,8 +9,8 @@ from src.schemas import SearchResult, ScenePayload
 from src.router import LLMRouter
 from src.expander import QueryExpander
 from src.reranker import Reranker
-from src.prompts import RAG_GENERATION, RAG_SYSTEM 
-# 👇 [수정] KoreanTokenizer 추가
+# 👇 [수정] 분리된 프롬프트 4종 가져오기
+from src.prompts import RAG_GENERATION_CHAPTER, RAG_GENERATION_SCENE, RAG_SYSTEM_CHAPTER, RAG_SYSTEM_SCENE
 from src.utils import load_json, KoreanTokenizer
 
 class RAGPipeline:
@@ -25,12 +25,22 @@ class RAGPipeline:
         if not self.lookup:
             print("⚠️ [Warning] Lookup Store 비어있음.")
         
-        # 👇 [수정] 토크나이저 초기화 (Kiwi)
+        # 👇 [수정] characters.json 파일 통째로 읽어오기 (모든 모드에서 전체 정보 사용)
+        char_path = os.path.join(settings.paths["data_dir"], "characters.json")
+        self.raw_character_info = ""
+        if os.path.exists(char_path):
+            with open(char_path, 'r', encoding='utf-8') as f:
+                self.raw_character_info = f.read()
+        else:
+            print("⚠️ [Warning] characters.json 파일이 없습니다.")
+
+        # 토크나이저 초기화 (Kiwi)
         self.tokenizer = KoreanTokenizer()
 
-        # BM25 엔진 초기화
+        # BM25 엔진 및 챕터-이벤트 매핑 테이블 초기화
         self.bm25 = None
         self.bm25_data = [] 
+        self.chapter_event_map = {} # cid -> eid 매핑용
         self._init_bm25()
         
         self.router = LLMRouter(llm)
@@ -47,7 +57,15 @@ class RAGPipeline:
         with open(bm25_path, 'r', encoding='utf-8') as f:
             self.bm25_data = json.load(f)
         
-        # 👇 [수정] split() 대신 형태소 분석기 사용
+        # 👇 [추가] 챕터가 속한 이벤트를 찾기 위한 매핑 생성
+        for doc in self.bm25_data:
+            p = doc['payload']
+            cid = p.get('chapter_id')
+            eid = p.get('event_id')
+            if cid is not None and eid is not None:
+                self.chapter_event_map[cid] = eid
+
+        # 형태소 분석 기반 토큰화
         tokenized_corpus = [self.tokenizer.tokenize(doc['text']) for doc in self.bm25_data]
         
         self.bm25 = BM25Okapi(tokenized_corpus)
@@ -65,10 +83,7 @@ class RAGPipeline:
         # 2. BM25 Search
         bm25_hits = []
         if self.bm25:
-            # 원본과 확장된 쿼리를 합쳐서 BM25에 넣습니다.
             combined_query = f"{query} {expanded_query}" 
-            
-            # 👇 [수정] 검색어도 형태소 분석기로 쪼갬 ("동구가" -> ['동구', '가'])
             tokenized_query = self.tokenizer.tokenize(combined_query)
             
             doc_scores = self.bm25.get_scores(tokenized_query)
@@ -152,7 +167,7 @@ class RAGPipeline:
 
     def _save_debug_log(self, query, expanded_query, scanned_points, final_docs):
         log_path = "debug_search_log.txt"
-        with open(log_path, "w", encoding="utf-8") as f:
+        with open(log_path, "a", encoding="utf-8") as f:
             f.write(f"=== Debug Log (Hybrid Search) ===\n")
             f.write(f"Original Query: {query}\n")
             f.write(f"Expanded Query: {expanded_query}\n\n")
@@ -176,10 +191,36 @@ class RAGPipeline:
         intent, cid = self.router.route(query)
         print(f"🚦 [Router] 분석 결과: Intent='{intent}', Chapter='{cid}'")
         
+        # 📌 Case A: 챕터 요약 (Lookup)
         if intent == "lookup_chapter" and cid:
-            summary = self.lookup.get(f"chapter_{cid}", "정보 없음")
-            return self.llm.ask("당신은 요약 봇입니다.", f"{cid}화 내용을 요약해줘.\n내용: {summary}")
+            # 1. 챕터 줄거리 가져오기
+            chapter_summary = self.lookup.get(f"chapter_{cid}", "정보 없음")
+            
+            # 2. 사건(Event) 줄거리 가져오기 (매핑 활용)
+            event_id = self.chapter_event_map.get(cid)
+            event_summary = ""
+            if event_id:
+                event_summary = self.lookup.get(f"event_{event_id}", "")
+            
+            # 3. Context 조립 (사건 요약 + 챕터 요약)
+            full_context = ""
+            if event_summary:
+                full_context += f"[Related Event Summary (Event {event_id})]\n{event_summary}\n\n"
+            full_context += f"[Target Chapter Summary (Chapter {cid})]\n{chapter_summary}"
 
+            # 4. 프롬프트 생성 (RAG_GENERATION_CHAPTER 사용)
+            formatted_prompt = RAG_GENERATION_CHAPTER.format(
+                user_query=query,
+                # 👇 [수정] 인물 정보를 전체 통째로 주입 (raw_character_info)
+                character_info=self.raw_character_info,
+                global_summary=self.lookup.get("global", ""),
+                # 👇 [수정] context_summaries 위치에 사건+챕터 요약 주입
+                context_summaries=full_context 
+            )
+            # 👇 [수정] RAG_SYSTEM_CHAPTER 사용
+            return self.llm.ask(RAG_SYSTEM_CHAPTER, formatted_prompt)
+
+        # 📌 Case B: 일반 검색 (Search)
         search_query = self.expander.expand(query)
         print(f"🔍 [Expander] 확장된 쿼리: '{search_query}'")
 
@@ -223,13 +264,15 @@ class RAGPipeline:
                 e_full = self.lookup.get(f"event_{p.event_id}", "")
                 if e_full: events.add(f"- [Event] {e_full}")
 
-        final_prompt = RAG_GENERATION.format(
-            # ★ [수정] query -> search_query로 변경! (확장된 쿼리를 넘겨야 이름 매칭이 잘 됨)
-            character_info=self.expander.get_profile_str(search_query),
+        # 👇 [수정] RAG_GENERATION_SCENE 사용
+        final_prompt = RAG_GENERATION_SCENE.format(
+            # 👇 [수정] 인물 정보를 전체 통째로 주입 (raw_character_info)
+            character_info=self.raw_character_info,
             global_summary=self.lookup.get("global", ""),
             context_summaries="\n".join(events) + "\n" + "\n".join(chapters),
             scene_details="\n".join(scenes),
             user_query=query
         )
 
-        return self.llm.ask(RAG_SYSTEM, final_prompt)
+        # 👇 [수정] RAG_SYSTEM_SCENE 사용
+        return self.llm.ask(RAG_SYSTEM_SCENE, final_prompt)
