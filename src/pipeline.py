@@ -9,7 +9,6 @@ from src.schemas import SearchResult, ScenePayload
 from src.router import LLMRouter
 from src.expander import QueryExpander
 from src.reranker import Reranker
-# 👇 [수정] 분리된 프롬프트 4종 가져오기
 from src.prompts import RAG_GENERATION_CHAPTER, RAG_GENERATION_SCENE, RAG_SYSTEM_CHAPTER, RAG_SYSTEM_SCENE
 from src.utils import load_json, KoreanTokenizer
 

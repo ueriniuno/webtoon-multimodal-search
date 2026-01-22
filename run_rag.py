@@ -45,8 +45,6 @@ def main():
             start_time = time.time()
             
             # 파이프라인 실행
-            # (window_size 인자는 pipeline.run 메서드 확장이 필요하지만,
-            # 현재 기본 pipeline.py는 이를 지원하지 않으므로 일단 query만 넘김)
             # 만약 window_size를 구현하고 싶다면 pipeline.py의 retrieve 부분 수정 필요
             # 상단에 설정한 WINDOW_SIZE 값을 전달
             answer = pipeline.run(user_query, window_size=WINDOW_SIZE)

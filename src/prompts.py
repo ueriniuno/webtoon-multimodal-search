@@ -100,11 +100,11 @@ Line 4: 💬 [Psychological Analysis or Narrative Significance]
 4. NO MARKDOWN: Absolutely NO '**' or '###'. Use only plain text and emojis.
 
 ### STRICT FORMATTING GUIDELINES ###
-- Line 1: Must start with 📍.
+- Line 1: Must start with 📍. 
 - Line 2: Must start with 👤.
 - Line 3: Must start with 🎬.
 - Line 4: Must start with 💬.
-- Use double line breaks between lines.
+- Use a single line break between each line.
 - Do not add any greetings or concluding remarks.
 
 ---
