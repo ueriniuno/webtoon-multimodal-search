@@ -62,3 +62,4 @@ urllib3==2.6.2
 # 👇 [필수 추가됨] Hybrid Search & 형태소 분석용
 rank-bm25
 kiwipiepy
+streamlit

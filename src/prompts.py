@@ -85,27 +85,28 @@ Final Answer (in Korean):
 """
 
 RAG_GENERATION_SCENE = """
-### MANDATORY OUTPUT STRUCTURE (ALWAYS 4 LINES) ###
-You MUST provide the following four lines for every single response. Do not skip any line even if the query is a simple factual question.
+### MANDATORY OUTPUT STRUCTURE (5 SCENES x 4 LINES) ###
+You MUST provide a 4-line response for EACH of the 5 scenes provided in [4. Scene Details]. 
+Your total output must consist of 5 separate blocks, each following the 4-line format below.
 
+[Scene X]
 Line 1: 📍 [Episode and Cut Number Information]
 Line 2: 👤 [Main Character's Action/Behavior - Remove physical traits]
 Line 3: 🎬 [Surrounding Situation and Environment]
 Line 4: 💬 [Psychological Analysis or Narrative Significance]
 
+(Repeat this 5 times, with a double line break between each scene block)
+
 ### TASK & REFINEMENT ###
-1. ALWAYS COMPLETE THE FORMAT: Even if the user only asks "What episode is this?", you must provide all 4 lines (Location, Action, Situation, Context).
-2. FIND LOCATION FIRST: Extract the episode and cut info from [4. Scene Details] for Line 1.
+1. INDIVIDUAL ANALYSIS: [4. Scene Details] contains exactly 5 scenes. You MUST process each scene individually and generate one 4-line block for each. Do NOT combine or synthesize them into one.
+2. FIND LOCATION: For Line 1, extract the specific episode and cut info for THAT specific scene.
 3. REWRITE & CLEANSE: In Line 2, replace physical descriptors (hair color, etc.) with character names from [1. Character Info].
 4. NO MARKDOWN: Absolutely NO '**' or '###'. Use only plain text and emojis.
 
 ### STRICT FORMATTING GUIDELINES ###
-- Line 1: Must start with 📍. 
-- Line 2: Must start with 👤.
-- Line 3: Must start with 🎬.
-- Line 4: Must start with 💬.
-- Use a single line break between each line.
-- Do not add any greetings or concluding remarks.
+- Each block must have exactly 4 lines starting with 📍, 👤, 🎬, 💬.
+- Use a double line break between each of the 5 blocks.
+- Do not add any greetings, concluding remarks, or block headers like 'Scene 1'. Just the 4 lines per scene.
 
 ---
 ### 1. [인물 상세 정보]
@@ -124,7 +125,7 @@ Line 4: 💬 [Psychological Analysis or Narrative Significance]
 **User Query:** {user_query}
 
 ### FINAL OUTPUT ###
-MANDATORY: You must generate EXACTLY 4 LINES as specified in the structure above. Respond in natural Korean.
+CRITICAL: Generate 5 separate 4-line responses, one for each scene found in [4. Scene Details]. Each response must be exactly 4 lines.
 
 Final Answer (in Korean):
 """
